@@ -18,4 +18,3 @@ dependencyResolutionManagement {
 rootProject.name = "NetApi"
 include ':app'
 include ':netlify'
-include ':android-networking'
