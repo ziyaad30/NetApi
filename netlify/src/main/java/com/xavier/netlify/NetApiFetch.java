@@ -32,7 +32,7 @@ public class NetApiFetch {
     }
 
     public interface onFetchApiListener {
-        void onSuccess (JSONObject jsonObject);
+        void onSuccess (JSONObject jsonObject, int responseCode, boolean isRedirect, boolean isSuccessful);
         void onFailed (String errorMessage);
         void onComplete (String message);
     }
@@ -59,27 +59,22 @@ public class NetApiFetch {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Log.e(TAG, "Request executed: " + call.isExecuted());
                 if (response.code() != 200) {
-                    Log.e(TAG, "RESPONSE CODE: " + response.code());
+                    listener.onSuccess(null, response.code(), response.isRedirect(), response.isSuccessful());
                     return;
                 }
                 if (response.isRedirect()) {
-                    Log.e(TAG, "REDIRECTED: " + response.isRedirect());
+                    listener.onSuccess(null, response.code(), response.isRedirect(), response.isSuccessful());
                     return;
                 }
                 if (!response.isSuccessful()) {
-                    Log.e(TAG, "SUCCESS: " + response.isSuccessful());
+                    listener.onSuccess(null, response.code(), response.isRedirect(), response.isSuccessful());
                     return;
                 }
 
                 try {
                     JSONObject jsonObject = new JSONObject(Objects.requireNonNull(response.body()).string());
-                    Log.e(TAG, "NetApiFetch, found "
-                            + jsonObject.length() +
-                            " results.");
-                    Log.e(TAG, jsonObject.toString());
-                    listener.onSuccess(jsonObject);
+                    listener.onSuccess(jsonObject, response.code(), response.isRedirect(), response.isSuccessful());
                 } catch (JSONException e) {
                     listener.onFailed(e.getMessage());
                 }
