@@ -25,7 +25,7 @@ public class NetApiFetch {
         this.listener = listener;
     }
 
-    interface onFetchApiListener {
+    public interface onFetchApiListener {
         void onSuccess (JSONObject jsonObject);
         void onFailed (String errorMessage);
         void onComplete (String message);
